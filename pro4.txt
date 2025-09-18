@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple PHP Validation</title>
+<style>.error{color:red;}</style>
+</head>
+<body>
+<?php
+$name=$email=$password="";
+$nameErr=$emailErr=$passwordErr="";
+$result="";
+
+function clean($data){ return htmlspecialchars(stripslashes(trim($data))); }
+
+if($_SERVER["REQUEST_METHOD"]=="POST"){
+    $name = clean($_POST["name"]??"");
+    $email = clean($_POST["email"]??"");
+    $password = clean($_POST["password"]??"");
+
+    if(!$name) $nameErr="Name is required";
+    elseif(!preg_match("/^[a-zA-Z ]+$/",$name)) $nameErr="Only letters and spaces allowed";
+
+    if(!$email) $emailErr="Email is required";
+    elseif(!filter_var($email,FILTER_VALIDATE_EMAIL)) $emailErr="Invalid email";
+
+    if(!$password) $passwordErr="Password is required";
+    elseif(!preg_match("/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%^&]).{7,}$/",$password))
+        $passwordErr="Password must be 7+ chars with uppercase, number & special char";
+
+    if(!$nameErr && !$emailErr && !$passwordErr){
+        $result = "<h3>Your input:</h3>Name: $name<br>Email: $email<br>Password: $password";
+    }
+}
+?>
+<form method="post">
+  Name: <input type="text" name="name" value="<?= htmlspecialchars($name) ?>">
+  <span class="error"><?= $nameErr ?></span><br><br>
+  Email: <input type="text" name="email" value="<?= htmlspecialchars($email) ?>">
+  <span class="error"><?= $emailErr ?></span><br><br>
+  Password: <input type="password" name="password">
+  <span class="error"><?= $passwordErr ?></span><br><br>
+  <input type="submit" value="Submit">
+</form>
+<div><?= $result ?></div>
+</body>
+</html>

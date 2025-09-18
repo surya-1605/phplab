@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head><title>LOGIN FORM</title></head>
+<body>
+<h2>LOGIN FORM</h2>
+<form method="post">
+  USERNAME: <input type="text" name="username" required><br><br>
+  PASSWORD: <input type="password" name="password" required><br><br>
+  <input type="submit" value="Login">
+</form>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"]=="POST"){
+    $u=$_POST['username'];
+    $p=$_POST['password'];
+    if($u==="admin" && $p==="pass123"){
+        header("Location: home.php");
+        exit;
+    } else {
+        echo "Invalid username or password.";
+    }
+}
+?>
+</body>
+</html>
+
+
+session_start();
+
+// If no username stored, send back to login page
+if (!isset($_SESSION['username'])) {
+    header("Location: prog06.php");
+    exit;
+}
+
+$username = $_SESSION['username'];
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home</title>
+</head>
+<body>
+  <h1>Welcome, <?php echo htmlspecialchars($username); ?>!</h1>
+
+  <p><strong>Your Information</strong></p>
+  <p>Email: ragini@gmail.com</p>
+  <p>Phone: +91 6790357809</p>
+  <p>Location: Coimbatore, India</p>
+
+  <p><a href="logout.php">LOGOUT</a></p>
+</body>
+</html>

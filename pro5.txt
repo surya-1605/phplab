@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>College Library Form</title>
+<style>.error{color:red;}</style>
+</head>
+<body>
+<?php
+$name=$roll=$email=$dept="";
+$nameErr=$rollErr=$emailErr=$deptErr="";
+
+function clean($data){ return htmlspecialchars(stripslashes(trim($data))); }
+
+if($_SERVER["REQUEST_METHOD"]=="POST"){
+    if(empty($_POST["name"])) $nameErr="Name is required";
+    else{
+        $name=clean($_POST["name"]);
+        if(!preg_match("/^[a-zA-Z ]+$/",$name)) $nameErr="Only letters and spaces allowed";
+    }
+
+    if(empty($_POST["roll"])) $rollErr="Roll number is required";
+    else{
+        $roll=clean($_POST["roll"]);
+        if(!preg_match("/^[0-9]+$/",$roll)) $rollErr="Only numbers allowed";
+    }
+
+    if(empty($_POST["email"])) $emailErr="Email is required";
+    else{
+        $email=clean($_POST["email"]);
+        if(!filter_var($email,FILTER_VALIDATE_EMAIL)) $emailErr="Invalid email format";
+    }
+
+    if(empty($_POST["dept"])) $deptErr="Department is required";
+    else $dept=clean($_POST["dept"]);
+}
+?>
+<h2>College Library Student Form</h2>
+<form method="post">
+  Name: <input type="text" name="name" value="<?= htmlspecialchars($name) ?>">
+  <span class="error">* <?= $nameErr ?></span><br><br>
+
+  Roll No: <input type="text" name="roll" value="<?= htmlspecialchars($roll) ?>">
+  <span class="error">* <?= $rollErr ?></span><br><br>
+
+  Email: <input type="text" name="email" value="<?= htmlspecialchars($email) ?>">
+  <span class="error">* <?= $emailErr ?></span><br><br>
+
+  Department:
+  <select name="dept">
+    <option value="">Select</option>
+    <option value="computer science" <?= $dept=="computer science"?"selected":"" ?>>Computer Science</option>
+    <option value="data analytics" <?= $dept=="data analytics"?"selected":"" ?>>Data Analytics</option>
+    <option value="maths" <?= $dept=="maths"?"selected":"" ?>>Maths</option>
+  </select>
+  <span class="error">* <?= $deptErr ?></span><br><br>
+
+  <input type="submit" value="Submit">
+</form>
+
+<?php
+if($_SERVER["REQUEST_METHOD"]=="POST" && !$nameErr && !$rollErr && !$emailErr && !$deptErr){
+    echo "<h3>Student Details Entered:</h3>";
+    echo "Name: $name<br>Roll No: $roll<br>Email: $email<br>Department: $dept";
+}
+?>
+</body>
+</html>
